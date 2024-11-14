@@ -1,5 +1,6 @@
 def main():
-    print("Hello from gps-imu-sim!")
+    i= 5+6
+    print (f"i = {i}")
 
 
 if __name__ == "__main__":
