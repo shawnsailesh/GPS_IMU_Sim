@@ -1,8 +1,9 @@
+'''
+example on how to publish data to MQTT borker
+'''
 
-import time
-import random  # To simulate sensor data
-import time
 
+import time, random, os, sys
 import paho.mqtt.client as mqtt
 import socket # for error handling 
 
@@ -14,23 +15,20 @@ topic = "sensor/data"
 
 # Create MQTT client instance
 try:
-    client = mqtt.Client()
-
-# Connect to broker
+    # create client and connect to broker
+    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, reconnect_on_failure=True)
     client.connect(
-        #mqtt.CallbackAPIVersion.VERSION1,
         broker_address, 
         PORT, 
-        #clean_start=True
         )
 except socket.error as e:
     print("ERROR connection to MQTT broker failed: " , e)
+    client.reconnect()
+    #sys.exit()
 finally:
     client.disconnect()
 
-
-print(f"Client socket obj {client.socket}")
-
+# simulated tep example
 try:
     while True:
         # Simulate sensor data
@@ -41,7 +39,7 @@ try:
         client.publish(topic, sensor_data)
         
         # Wait before sending the next data point
-        time.sleep(0.1)
+        time.sleep(1)
 except KeyboardInterrupt as e:
     print("Stopping...")
 finally:

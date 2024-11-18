@@ -1,3 +1,4 @@
+import paho
 import paho.mqtt.client as mqtt
 
 # MQTT settings
@@ -7,20 +8,23 @@ topic = "sensor/data"
 
 # Define callback for when a message is received
 def on_message(client, userdata, message):
-    # sensor_data = float(message.payload.decode())
-    sensor_data = message.payload.decode()
+    sensor_data = float(message.payload.decode())
     print(f"Received data: {sensor_data}")
 
 # Create MQTT client instance
-client = mqtt.Client()
+client = mqtt.Client(
+    callback_api_version=2,
+    userdata=None,
+    protocol=paho.MQTTv5,
+    )
 
 # Connect to the broker and subscribe to the topic
 client.connect(
     broker_address,
     PORT
     )
-client.subscribe(topic)
 
+client.subscribe(topic)
 # Attach the callback function
 client.on_message = on_message
 
